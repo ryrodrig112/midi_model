@@ -68,7 +68,7 @@ class Block(nn.Module):
 
 
 class DecoderTransformer(nn.Module):
-    def __init__(self, n_embd, n_head, n_blocks, block_size, dropout=0.5):
+    def __init__(self, n_embd, n_head, n_blocks, block_size, vocab_size, dropout=0.5):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
         self.position_embedding_table = nn.Embedding(block_size, n_embd)
