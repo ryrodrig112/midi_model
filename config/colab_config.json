@@ -1,5 +1,5 @@
 { "paths": {
-  "data_root_dir": "../gdrive/MyDrive/midi_modeling/data/",
+  "data_root_dir": "../gdrive/MyDrive/colab/midi_modeling/data/",
   "original_midi_dir":  "midi",
   "tokenized_midi_path": "midi_tokenized",
   "sequence_chunk_path": "midi_chunks"
