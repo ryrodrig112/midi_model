@@ -88,6 +88,13 @@ class DecoderTransformer(nn.Module):
             self.vocab_size = vocab_size
             self.dropout = dropout
 
+        print(f"n_embd {n_embd}")
+        print(f"n_head {n_head}")
+        print(f"n_blocks {n_blocks}")
+        print(f"n_blocks {block_size}")
+        print(f"vocab_size {vocab_size}")
+        print(f"dropout {dropout}")
+
 
         self.token_embedding_table = nn.Embedding(self.vocab_size, self.n_embd)
         self.position_embedding_table = nn.Embedding(self.block_size, self.n_embd)
