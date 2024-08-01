@@ -25,7 +25,6 @@
   "tokenizer": {
     "vocab_size": 30000,
     "model": "BPE",
-    "param_path": "tokenizer/tokenizer.json",
-
+    "param_path": "tokenizer/tokenizer.json"
   }
 }
