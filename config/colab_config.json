@@ -5,9 +5,9 @@
   "sequence_chunk_path": "midi_chunks"
 },
   "data": {
-  "train_pct":  "0.75",
-  "val_pct":  "0.125",
-  "test_pct":  "0.125"
+  "train_pct":  0.75,
+  "val_pct":  0.125,
+  "test_pct":  0.125
 },
   "model": {
     "type": "DecoderTransformer",
