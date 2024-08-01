@@ -73,7 +73,6 @@ class DecoderTransformer(nn.Module):
         super().__init__()
 
         if config is not None:
-            print("Config")
             self.n_embd = config.get('n_embd') if n_embd is None else n_embd
             self.n_head = config.get('n_head') if n_head is None else n_head
             self.n_blocks = config.get('n_blocks') if n_blocks is None else n_blocks
@@ -81,7 +80,6 @@ class DecoderTransformer(nn.Module):
             self.vocab_size = config.get('vocab_size') if vocab_size is None else vocab_size
             self.dropout = config.get('dropout')
         else:
-            print("No Config")
             assert n_embd is not None and n_head is not None and n_blocks is not None and block_size is not None and vocab_size is not None, "When not using config, all parameters must be provided."
             self.n_embd = n_embd
             self.n_head = n_head
