@@ -1,4 +1,5 @@
 {
+
   "vocab_size": 30000,
   "model": "BPE",
   "param_path": "..."

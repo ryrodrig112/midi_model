@@ -1,0 +1,30 @@
+{ "paths": {
+  "data_root_dir": "../gdrive/MyDrive/midi_modeling/data/",
+  "original_midi_dir":  "midi",
+  "tokenized_midi_path": "midi_tokenized",
+  "sequence_chunk_path": "midi_chunks"
+},
+  "data": {
+  "train_pct":  "0.75",
+  "val_pct":  "0.125",
+  "test_pct":  "0.125"
+},
+  "model": {
+    "type": "DecoderTransformer",
+    "batch_size": 32,
+    "block_size": 1000,
+    "max_steps": 10000,
+    "learning_rate": 0.003,
+    "eval_iters": 10,
+    "n_blocks": 3,
+    "n_head": 4,
+   "n_layer": 3,
+    "droupout": 0.2,
+    "vocab_size": 30000
+  },
+  "tokenizer": {
+    "vocab_size": 30000,
+    "model": "BPE",
+    "param_path": "tokenizer.json"
+  }
+}
