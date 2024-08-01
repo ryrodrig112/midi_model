@@ -16,9 +16,10 @@
     "max_steps": 10000,
     "learning_rate": 0.003,
     "eval_iters": 10,
+    "n_embd": 20,
     "n_blocks": 3,
     "n_head": 4,
-   "n_layer": 3,
+    "n_layer": 3,
     "dropout": 0.2,
     "vocab_size": 30000
   },
