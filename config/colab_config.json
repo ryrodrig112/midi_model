@@ -19,12 +19,13 @@
     "n_blocks": 3,
     "n_head": 4,
    "n_layer": 3,
-    "droupout": 0.2,
+    "dropout": 0.2,
     "vocab_size": 30000
   },
   "tokenizer": {
     "vocab_size": 30000,
     "model": "BPE",
-    "param_path": "tokenizer.json"
+    "param_path": "tokenizer/tokenizer.json",
+
   }
 }

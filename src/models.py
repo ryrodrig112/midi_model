@@ -68,13 +68,32 @@ class Block(nn.Module):
 
 
 class DecoderTransformer(nn.Module):
-    def __init__(self, n_embd, n_head, n_blocks, block_size, vocab_size, dropout=0.5):
+    def __init__(self, config=None,
+                 n_embd=None, n_head=None, n_blocks=None, block_size=None, vocab_size=None, dropout=0.5):
         super().__init__()
-        self.token_embedding_table = nn.Embedding(vocab_size, n_embd)
-        self.position_embedding_table = nn.Embedding(block_size, n_embd)
-        self.blocks = nn.Sequential(*[Block(n_embd, n_head, block_size) for _ in range(
+
+        if config:
+            self.n_embd = n_embd if n_embd is not None else config.get('n_embd')
+            self.n_head = n_head if n_head is not None else config.get('n_head')
+            self.n_blocks = n_blocks if n_blocks is not None else config.get('n_blocks')
+            self.block_size = block_size if block_size is not None else config.get('block_size')
+            self.vocab_size = vocab_size if vocab_size is not None else config.get('vocab_size')
+            self.dropout = config.get('dropout')
+        else:
+            assert n_embd is not None and n_head is not None and n_blocks is not None and block_size is not None and vocab_size is not None, "When not using config, all parameters must be provided."
+            self.n_embd = n_embd
+            self.n_head = n_head
+            self.n_blocks = n_blocks
+            self.block_size = block_size
+            self.vocab_size = vocab_size
+            self.dropout = dropout
+
+
+        self.token_embedding_table = nn.Embedding(self.vocab_size, self.n_embd)
+        self.position_embedding_table = nn.Embedding(self.block_size, self.n_embd)
+        self.blocks = nn.Sequential(*[Block(self.n_embd, self.n_head, self.block_size) for _ in range(
             n_blocks)])  # the * unpacks the contents of the list, as seqential cannot take a list
-        self.lm_head = nn.Linear(n_embd, vocab_size)
+        self.lm_head = nn.Linear(self.n_embd, self.vocab_size)
 
     def forward(self, x, targets=None):
         B, T = x.shape
