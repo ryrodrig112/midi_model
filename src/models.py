@@ -8,7 +8,7 @@ class AttnHead(nn.Module):
         self.key = nn.Linear(n_embed, head_size, bias=False, device=self.device)
         self.query = nn.Linear(n_embed, head_size, bias=False, device=self.device)
         self.value = nn.Linear(n_embed, head_size, bias=False, device=self.device)
-        self.register_buffer('tril', torch.ones(block_size, block_size), device=self.device)
+        self.register_buffer('tril', torch.ones(block_size, block_size, device=self.device))
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
