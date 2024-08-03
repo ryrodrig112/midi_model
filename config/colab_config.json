@@ -1,8 +1,8 @@
 { "paths": {
-  "data_root_dir": "../gdrive/MyDrive/colab/midi_modeling/data/",
+  "data_root_dir": "./gdrive/MyDrive/colab/midi_modeling/data/",
   "original_midi_dir":  "midi",
-  "tokenized_midi_path": "midi_tokenized",
-  "sequence_chunk_path": "midi_chunks"
+  "tokenized_midi_sequences_path": "midi_tokenized/bpe_30k/full_sequences",
+  "tokenized_midi_chunk_path": "midi_tokenized/bpe_30k/chunks"
 },
   "data": {
   "train_pct":  0.75,

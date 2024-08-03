@@ -88,6 +88,8 @@ class DecoderTransformer(nn.Module):
             self.vocab_size = vocab_size
             self.dropout = dropout
 
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+
         self.token_embedding_table = nn.Embedding(self.vocab_size, self.n_embd)
         self.position_embedding_table = nn.Embedding(self.block_size, self.n_embd)
         self.blocks = nn.Sequential(*[Block(self.n_embd, self.n_head, self.block_size) for _ in range(
@@ -97,7 +99,7 @@ class DecoderTransformer(nn.Module):
     def forward(self, x, targets=None):
         B, T = x.shape
         tok_emb = self.token_embedding_table(x)
-        pos_emb = self.position_embedding_table(torch.arange(T, device=device))
+        pos_emb = self.position_embedding_table(torch.arange(T, device=self.device))
         x = tok_emb + pos_emb
         x = self.blocks(x)
         logits = self.lm_head(x)  # B, T, vocab_size
@@ -113,10 +115,11 @@ class DecoderTransformer(nn.Module):
         return logits, loss
 
 
+
 class LayerNorm:  # coded for instruction but used pytorch implentaiton in code
     def __init__(self, dim, eps=1e-5):
         self.gamma = torch.ones(dim)  # sd param
-        self.beta = torch.zeros(mu)  # mean param
+        self.beta = torch.zeros(dim)  # mean param
         self.eps = eps
 
     def __call__(self, x):
