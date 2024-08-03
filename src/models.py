@@ -2,9 +2,12 @@ import torch, torch.nn as nn, torch.nn.functional as F
 
 
 class AttnHead(nn.Module):
-    def __init__(self, head_size, n_embed, block_size, dropout=0.5):
+    def __init__(self, head_size, n_embed, block_size, device=None, dropout=0.5):
         super().__init__()
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = device
         self.key = nn.Linear(n_embed, head_size, bias=False, device=self.device)
         self.query = nn.Linear(n_embed, head_size, bias=False, device=self.device)
         self.value = nn.Linear(n_embed, head_size, bias=False, device=self.device)
@@ -28,10 +31,13 @@ class AttnHead(nn.Module):
 
 
 class MultiHeadAttn(nn.Module):
-    def __init__(self, num_heads, head_size, n_embd, block_size, dropout=0.5):
+    def __init__(self, num_heads, head_size, n_embd, block_size, device=None, dropout=0.5):
         super().__init__()
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.heads = nn.ModuleList([AttnHead(head_size, n_embd, block_size) for _ in range(num_heads)])
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = device
+        self.heads = nn.ModuleList([AttnHead(head_size, n_embd, block_size, device=self.device, dropout=dropout) for _ in range(num_heads)])
         self.proj = nn.Linear(n_embd, n_embd, device=self.device)
         self.dropout = nn.Dropout(dropout)
 
@@ -42,9 +48,12 @@ class MultiHeadAttn(nn.Module):
 
 
 class FeedForward(nn.Module):
-    def __init__(self, n_embed, dropout=0.5):
+    def __init__(self, n_embed, device=None, dropout=0.5):
         super().__init__()
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = device
         self.net = nn.Sequential(nn.Linear(n_embed, 4 * n_embed, device=self.device),
                                  nn.ReLU(),
                                  nn.Linear(4 * n_embed, n_embed, device=self.device),
@@ -56,12 +65,15 @@ class FeedForward(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, n_embed, num_heads, block_size):
+    def __init__(self, n_embed, num_heads, block_size, device=None, dropout=0.5):
         super().__init__()
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = device
         head_size = n_embed // num_heads  # size of concatenated attn vectors is same size as embedding size
-        self.sa = MultiHeadAttn(num_heads, head_size, n_embed, block_size)
-        self.ffwd = FeedForward(n_embed)
+        self.sa = MultiHeadAttn(num_heads, head_size, n_embed, block_size, device=self.device, dropout=dropout)
+        self.ffwd = FeedForward(n_embed, device=self.device, dropout=dropout)
         self.ln1 = nn.LayerNorm(n_embed, device=self.device)
         self.ln2 = nn.LayerNorm(n_embed, device=self.device)
 
@@ -73,7 +85,7 @@ class Block(nn.Module):
 
 class DecoderTransformer(nn.Module):
     def __init__(self, config=None,
-                 n_embd=None, n_head=None, n_blocks=None, block_size=None, vocab_size=None, dropout=0.5):
+                 n_embd=None, n_head=None, n_blocks=None, block_size=None, vocab_size=None, device=None, dropout=0.5):
         super().__init__()
 
         if config is not None:
@@ -92,11 +104,13 @@ class DecoderTransformer(nn.Module):
             self.vocab_size = vocab_size
             self.dropout = dropout
 
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-
+        if device is None:
+            self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        else:
+            self.device = device
         self.token_embedding_table = nn.Embedding(self.vocab_size, self.n_embd, device=self.device)
         self.position_embedding_table = nn.Embedding(self.block_size, self.n_embd, device=self.device)
-        self.blocks = nn.Sequential(*[Block(self.n_embd, self.n_head, self.block_size) for _ in range(
+        self.blocks = nn.Sequential(*[Block(self.n_embd, self.n_head, self.block_size, device=self.device, dropout=self.dropout) for _ in range(
             self.n_blocks)])  # the * unpacks the contents of the list, as sequential cannot take a list
         self.lm_head = nn.Linear(self.n_embd, self.vocab_size, device=self.device)
 
