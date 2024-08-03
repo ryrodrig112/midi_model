@@ -97,8 +97,8 @@ class DecoderTransformer(nn.Module):
         self.token_embedding_table = nn.Embedding(self.vocab_size, self.n_embd, device=self.device)
         self.position_embedding_table = nn.Embedding(self.block_size, self.n_embd, device=self.device)
         self.blocks = nn.Sequential(*[Block(self.n_embd, self.n_head, self.block_size) for _ in range(
-            self.n_blocks)])  # the * unpacks the contents of the list, as seqential cannot take a list
-        self.lm_head = nn.Linear(self.n_embd, self.vocab_size)
+            self.n_blocks)])  # the * unpacks the contents of the list, as sequential cannot take a list
+        self.lm_head = nn.Linear(self.n_embd, self.vocab_size, device=self.device)
 
     def forward(self, x, targets=None):
         B, T = x.shape
