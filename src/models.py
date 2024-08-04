@@ -122,15 +122,20 @@ class DecoderTransformer(nn.Module):
         x = self.blocks(x)
         logits = self.lm_head(x)  # B, T, vocab_size
 
-        if targets is None:
-            loss = None
-        else:
-            B, T, C = logits.shape
-            logits = logits.view(B * T, C)
-            targets = targets.reshape(B * T)
-            loss = F.cross_entropy(logits, targets)
+        return logits
 
-        return logits, loss
+    def calculate_loss(self, logits, targets, attention_mask):
+        B, T, C = logits.shape
+
+        logits = logits.view(B * T, C)
+        targets = targets.reshape(B * T)
+        attention_mask = attention_mask.view(-1)
+        loss_fn = nn.CrossEntropyLoss(reduction='none')
+
+        loss = loss_fn(logits, targets)
+        loss = loss * attention_mask
+        loss = loss.sum() / attention_mask.sum()
+        return loss
 
 
 
